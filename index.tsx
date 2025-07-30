@@ -834,4 +834,4 @@ function buildTypeChart() {
 }
 
 // --- RUN APP ---
-window.onload = initialize;
+DOMContentLoaded = initialize;
