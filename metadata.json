@@ -1,0 +1,5 @@
+{
+  "name": "Pokémon Battle Arena",
+  "description": "An advanced Pokémon battle simulator with Single, League, and Team battle modes.",
+  "requestFramePermissions": []
+}

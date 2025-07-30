@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Battle Arena</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Mode Selection Screen -->
+        <div class="screen active" id="modeScreen">
+            <header>
+                <h1>Pokémon Battle Arena</h1>
+                <p class="subtitle">Select your challenge!</p>
+            </header>
+            <div class="modes">
+                <div class="mode-card" id="selectSingleBattle">
+                    <i class="fas fa-fist-raised mode-icon"></i>
+                    <h3>Single Battle</h3>
+                    <p>A classic 1-on-1 Pokémon duel.</p>
+                </div>
+                <div class="mode-card" id="selectLeagueChallenge">
+                    <i class="fas fa-trophy mode-icon"></i>
+                    <h3>League Challenge</h3>
+                    <p>Defeat 5 trainers in a row to become the champion.</p>
+                </div>
+                <div class="mode-card" id="selectTeamBattle">
+                    <i class="fas fa-users mode-icon"></i>
+                    <h3>Team Battle</h3>
+                    <p>Assemble a team of 5 and face off against an opponent's team.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Selection Screen -->
+        <div class="screen" id="categoryScreen">
+            <header>
+                <h1 id="categoryTitle">Choose a Category</h1>
+                <p class="subtitle">Pokémon will be selected from this group.</p>
+            </header>
+            <div class="categories">
+                <div class="category normal" data-category="normal"><i class="fas fa-paw category-icon"></i><h3>Normal</h3></div>
+                <div class="category rare" data-category="rare"><i class="fas fa-gem category-icon"></i><h3>Rare</h3></div>
+                <div class="category legendary" data-category="legendary"><i class="fas fa-crown category-icon"></i><h3>Legendary</h3></div>
+                <div class="category mythical" data-category="mythical"><i class="fas fa-magic category-icon"></i><h3>Mythical</h3></div>
+            </div>
+            <button class="back-button" data-target="mode">Back to Modes</button>
+        </div>
+
+        <!-- Pokemon Selection Screen -->
+        <div class="screen" id="pokemonScreen">
+            <header>
+                <h1 id="selectionTitle">Choose Your Pokémon</h1>
+                <p class="subtitle" id="selectionSubtitle">Select 1 Pokémon from the <span id="currentCategory"></span> category</p>
+            </header>
+            <div class="selection-area">
+                <div class="pokemon-selection-main">
+                    <div class="search-container"><input type="text" id="pokemonSearch" placeholder="Search Pokémon by name or ID..."></div>
+                    <div class="pokemon-grid" id="pokemonGrid"></div>
+                    <div id="loadMoreContainer" style="display: none; text-align: center; margin-top: 20px;">
+                        <button id="loadMoreBtn">Load More</button>
+                    </div>
+                </div>
+                <div class="team-preview" id="teamPreview">
+                    <h3>Your Team</h3>
+                    <div id="teamPreviewList"></div>
+                    <p class="team-hint">Select 5 Pokémon</p>
+                </div>
+            </div>
+            <div class="selection-buttons">
+                <button class="back-button" data-target="category">Back to Categories</button>
+                <button id="startBattleBtn" disabled>Start Battle</button>
+            </div>
+        </div>
+
+        <!-- Battle Screen -->
+        <div class="screen" id="battleScreen">
+            <header>
+                <h1 id="battleTitle">Pokémon Battle</h1>
+                <p class="subtitle" id="battleSubtitle">Defeat your opponent!</p>
+                <button class="type-chart-btn" id="toggleTypeChartBtn">📜 Type Chart</button>
+            </header>
+            <div id="preloader" class="loading"><div class="loading-spinner"></div><p>Loading Battle Data...</p></div>
+            <div class="battle-arena" id="battleArena">
+                <div class="battle-field">
+                    <div class="pokemon-container player">
+                        <div id="playerTeamRoster" class="team-roster"></div>
+                        <div class="pokemon-active">
+                            <img id="playerPokemonImg" src="" alt="Player Pokemon">
+                            <div class="pokemon-info">
+                                <p><strong><span id="playerName"></span></strong> Lvl: 100</p>
+                                <p><span id="playerTypes"></span></p> 
+                                <div class="hp-bar"><div class="hp-fill" id="playerHPBar"></div></div>
+                                <p class="hp-text"><span id="playerHP"></span> / <span id="playerMaxHP"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="pokemon-container bot">
+                         <div class="pokemon-active">
+                            <img id="botPokemonImg" src="" alt="Bot Pokemon">
+                            <div class="pokemon-info">
+                                <p><strong><span id="botName"></span></strong> Lvl: 100</p>
+                                <p><span id="botTypes"></span></p>
+                                <div class="hp-bar"><div class="hp-fill" id="botHPBar"></div></div>
+                                <p class="hp-text"><span id="botHP"></span> / <span id="botMaxHP"></span></p>
+                            </div>
+                        </div>
+                        <div id="botTeamRoster" class="team-roster"></div>
+                    </div>
+                </div>
+
+                <div class="battle-actions-area">
+                    <div class="player-actions">
+                         <h2 class="moves-header">Your Moves</h2>
+                         <div class="moves-container" id="playerMovesContainer">
+                            <!-- Player moves rendered here -->
+                         </div>
+                         <button id="switchBtn" class="action-button"><i class="fas fa-sync-alt"></i> Switch</button>
+                    </div>
+                    <div class="bot-actions">
+                        <h2 class="moves-header">Opponent's Moves</h2>
+                        <div class="moves-container" id="botMovesGrid">
+                            <!-- Bot moves rendered here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="battle-log-container">
+                    <div class="battle-log" id="battleLog"></div>
+                </div>
+            </div>
+            <button class="back-button" id="endBattleBtn">End Battle</button>
+        </div>
+        
+        <!-- Result Screen -->
+        <div class="screen" id="resultScreen">
+            <h1 id="resultTitle"></h1>
+            <p id="resultMessage"></p>
+            <div id="resultImageContainer"></div>
+            <div class="result-actions">
+                <button id="rematchBtn" style="display: none;">Rematch</button>
+                <button id="goToHomeBtn" class="back-button" data-target="mode">Go to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Off-canvas Type Chart -->
+    <div id="typeChartCanvas">
+        <button id="closeChartBtn">✖</button>
+        <h2>Type Effectiveness</h2>
+        <div id="chartContent"></div>
+    </div>
+
+    <!-- Switch Modal -->
+    <div id="switchModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Switch Pokémon</h2>
+            <div id="switchModalGrid"></div>
+            <button id="closeSwitchModalBtn" class="back-button">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- League Transition Overlay -->
+    <div id="leagueTransitionOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="leagueTransitionText">Prepare for the next challenger!</h2>
+            <div class="loading-spinner" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script type="module" src="index.js"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
